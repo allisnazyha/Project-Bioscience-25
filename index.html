@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Crop Growth Derivative Simulation</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Chart.js for visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+
+    <!-- Header Content -->
+    <header class="bg-linear-to-r from-emerald-700 to-green-600 text-white py-6 px-6 shadow-sm">
+        <div class="max-w-5xl mx-auto">
+            <span class="bg-emerald-950/40 text-emerald-200 text-xs font-bold tracking-wider uppercase px-2.5 py-1 rounded-md">
+                Food Security Bioscience Project
+            </span>
+            <h1 class="text-2xl font-bold mt-1">Simple Quadratic Derivative Application</h1>
+            <p class="text-emerald-100 text-xs md:text-sm mt-1 max-w-2xl">
+                Tracking the daily growth speed (biomass accumulation) of Malaysian Lowland Cabbage using a standard high-school level polynomial equation.
+            </p>
+        </div>
+    </header>
+
+    <!-- Main Section -->
+    <main class="max-w-5xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Left Column: Simple Formulas -->
+        <div class="lg:col-span-1 space-y-4">
+            
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-xs">
+                <h2 class="text-md font-bold text-slate-900 mb-2">🌱 The Growth Problem</h2>
+                <p class="text-slate-600 text-xs leading-relaxed">
+                    In food systems optimization, we need to know exactly when a crop's daily growth speed starts stalling. This helps smart greenhouses budget fertilizer delivery and predict optimal harvest days.
+                </p>
+            </div>
+
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-xs space-y-3">
+                <h2 class="text-md font-bold text-slate-900">🧮 Clean Math Formulas</h2>
+                
+                <div class="p-3 bg-emerald-50 rounded-lg border border-emerald-100">
+                    <span class="text-[11px] font-bold text-emerald-800 uppercase block mb-1">Cabbage Weight: $f(x)$</span>
+                    <div class="font-mono text-sm font-bold text-slate-900">$f(x) = 6x - 0.05x^2$</div>
+                    <span class="text-[10px] text-slate-500 block mt-1">$x$ = Days (0 to 60) | $f(x)$ = Weight (Grams)</span>
+                </div>
+
+                <div class="p-3 bg-teal-50 rounded-lg border border-teal-100">
+                    <span class="text-[11px] font-bold text-teal-800 uppercase block mb-1">Growth Speed: $f'(x)$</span>
+                    <div class="font-mono text-sm font-bold text-slate-900">$f'(x) = 6 - 0.1x$</div>
+                    <span class="text-[10px] text-slate-500 block mt-1">Calculated via basic Power Rule. Measures Grams/Day.</span>
+                </div>
+            </div>
+
+            <!-- Reference Citation -->
+            <div class="bg-slate-900 text-slate-400 p-4 rounded-xl text-[11px] space-y-1">
+                <span class="text-slate-200 font-bold block">📊 Reference Data Source Baseline:</span>
+                <p>Growth window curves adapted to generalized trends from MARDI (Malaysian Agricultural Research and Development Institute) crop data manuals.</p>
+            </div>
+
+        </div>
+
+        <!-- Right Column: Chart and Terminal -->
+        <div class="lg:col-span-2 space-y-4">
+            
+            <!-- Graphic Card -->
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-xs">
+                <div class="flex items-center justify-between mb-3">
+                    <div>
+                        <h2 class="text-md font-bold text-slate-900">Interactive Cabbage Growth Timeline</h2>
+                        <p class="text-[11px] text-slate-400">Click on the chart to read the derivative at any crop age point.</p>
+                    </div>
+                </div>
+
+                <div class="relative w-full h-[280px]">
+                    <canvas id="cabbageChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Output Dashboard Terminal -->
+            <div id="displayCard" class="bg-slate-900 text-white p-5 rounded-xl border border-slate-800 transition-all duration-200">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
+                    <h3 class="text-xs font-bold tracking-wider text-slate-400 uppercase">Interactive Derivative Analysis</h3>
+                    <span class="text-xs bg-amber-500/20 text-amber-300 font-mono px-2 py-0.5 rounded" id="labelDay">Day 20 Selected</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <div>
+                            <span class="text-[11px] text-slate-400 block">Total Cabbage Weight $f(x)$</span>
+                            <div class="text-xl font-bold font-mono text-emerald-400" id="outFx">100.00 g</div>
+                        </div>
+                        <div>
+                            <span class="text-[11px] text-slate-400 block">Instantaneous Growth Rate $f'(x)$</span>
+                            <div class="text-xl font-bold font-mono text-teal-400" id="outDfx">4.00 g/day</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800/50 p-3 rounded-lg border border-slate-800 flex flex-col justify-center">
+                        <span class="text-xs text-amber-300 font-bold block mb-1">💡 What This Means:</span>
+                        <p id="outText" class="text-xs text-slate-200 leading-relaxed">
+                            Loading explanation...
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script>
+        // Core Simplified Math Formulas
+        function calcWeight(x) {
+            return (6 * x) - (0.05 * Math.pow(x, 2));
+        }
+
+        function calcRate(x) {
+            return 6 - (0.1 * x);
+        }
+
+        // Prepare Graph Data Pools (Day 0 to Day 60)
+        const labelsX = [];
+        const weightsY = [];
+        const ratesY = [];
+
+        for (let day = 0; day <= 60; day += 2) {
+            labelsX.push(day);
+            weightsY.push(calcWeight(day));
+            ratesY.push(calcRate(day));
+        }
+
+        // Plain Layman Explanations Generator
+        function generateLaymanBriefing(day, rate) {
+            if (day < 20) {
+                return `The cabbage is a young seedling. It is expanding its leaves. Right now, it is gaining weight at an increasing pace of ${rate.toFixed(1)} grams every single day. Growth acceleration is high!`;
+            } else if (day >= 20 && day <= 40) {
+                return `This is mature development. At a rate of ${rate.toFixed(1)} g/day, the vegetable is adding dense internal leafy weights efficiently. It's solidifying its nutrient core.`;
+            } else {
+                return `The crop is fully grown and reaching maximum density capacity. Its growth speed has dropped to just ${rate.toFixed(1)} g/day. This tells food logistics managers to harvest immediately before leaves decay.`;
+            }
+        }
+
+        // Render ChartJS Elements
+        const ctx = document.getElementById('cabbageChart').getContext('2d');
+        let selectedDay = 20; // Default selection starting state
+
+        const cabbageChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labelsX,
+                datasets: [
+                    {
+                        label: 'Total Weight (g)',
+                        data: weightsY,
+                        borderColor: '#059669',
+                        borderWidth: 2.5,
+                        pointRadius: 0,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Growth Velocity (g/day)',
+                        data: ratesY,
+                        borderColor: '#06b6d4',
+                        borderWidth: 1.5,
+                        borderDash: [5, 5],
+                        pointRadius: 0,
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { title: { display: true, text: 'Days Since Planting', font: { size: 11, weight: 'bold' } } },
+                    y: { position: 'left', title: { display: true, text: 'Total Mass Weight (Grams)', color: '#059669', font: { size: 11, weight: 'bold' } } },
+                    y1: { position: 'right', title: { display: true, text: 'Growth Rate (Grams/Day)', color: '#06b6d4', font: { size: 11, weight: 'bold' } }, grid: { drawOnChartArea: false } }
+                },
+                // Draw dynamic mathematical value line marker on click
+                plugins: [{
+                    id: 'markerLine',
+                    afterDatasetsDraw: (chart) => {
+                        const {ctx, scales: {x, y, y1}} = chart;
+                        const pixelX = x.getPixelForValue(selectedDay);
+                        
+                        ctx.save();
+                        ctx.beginPath();
+                        ctx.lineWidth = 1.5;
+                        ctx.strokeStyle = '#f59e0b';
+                        ctx.moveTo(pixelX, y.top);
+                        ctx.lineTo(pixelX, y.bottom);
+                        ctx.stroke();
+                        
+                        // Node Dots
+                        ctx.fillStyle = '#f59e0b';
+                        ctx.beginPath();
+                        ctx.arc(pixelX, y.getPixelForValue(calcWeight(selectedDay)), 4, 0, 2 * Math.PI);
+                        ctx.arc(pixelX, y1.getPixelForValue(calcRate(selectedDay)), 4, 0, 2 * Math.PI);
+                        ctx.fill();
+                        ctx.restore();
+                    }
+                }],
+                onClick: (e, elements, chart) => {
+                    const canvasPosition = Chart.helpers.getRelativePosition(e, chart);
+                    const clickedValueX = chart.scales.x.getValueForPixel(canvasPosition.x);
+                    
+                    if (clickedValueX >= 0 && clickedValueX <= 60) {
+                        // Round selection to nearest whole step value loop
+                        const cleanDay = Math.round(clickedValueX);
+                        updateDashboardMetrics(cleanDay);
+                    }
+                }
+            }
+        });
+
+        // Controller mapping functions updating HTML element nodes
+        function updateDashboardMetrics(day) {
+            selectedDay = day;
+            cabbageChart.update();
+
+            const weight = calcWeight(day);
+            const rate = calcRate(day);
+
+            document.getElementById('labelDay').innerText = `Day ${day} Selected`;
+            document.getElementById('outFx').innerText = `${weight.toFixed(2)} g`;
+            document.getElementById('outDfx').innerText = `${rate.toFixed(2)} g/day`;
+            document.getElementById('outText').innerText = generateLaymanBriefing(day, rate);
+
+            // Trigger flash border animation effect
+            const card = document.getElementById('displayCard');
+            card.classList.add('ring-1', 'ring-amber-500');
+            setTimeout(() => card.classList.remove('ring-1', 'ring-amber-500'), 250);
+        }
+
+        // Force launch starting calculations dashboard panel metrics on window load complete
+        window.onload = () => updateDashboardMetrics(20);
+    </script>
+</body>
+</html>
